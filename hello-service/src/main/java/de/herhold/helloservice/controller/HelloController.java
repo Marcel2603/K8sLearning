@@ -23,8 +23,8 @@ public class HelloController {
     private String accessKey;
     @Value("${app.secret:foobar}")
     private String secret;
-    @Value("${app.endpoint}")
-    private String endpoint;
+    //@Value("${app.endpoint}")
+    private String endpoint = "http://localstack";
 
     @GetMapping(value = "/hello")
     public ResponseEntity<String> sayHallo() {
@@ -38,10 +38,10 @@ public class HelloController {
                 secret
         );
         System.out.println(endpoint);
-        AmazonS3 s3client = AmazonS3ClientBuilder
+        System.out.println("New Version");
+	AmazonS3 s3client = AmazonS3ClientBuilder
                 .standard()
                 .withCredentials(new AWSStaticCredentialsProvider(credentials))
-                .withRegion(Regions.EU_CENTRAL_1)
                 .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endpoint, "eu-central-1"))
                 .build();
         String bucketName = "baeldung-bucket";
