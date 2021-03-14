@@ -1,0 +1,3 @@
+app:
+  access: ${access:foobar}
+  secret: ${secret:foobar}
