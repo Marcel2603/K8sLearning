@@ -3,6 +3,7 @@ package de.herhold.helloservice.controller;
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
+import com.amazonaws.client.builder.AwsClientBuilder;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
@@ -22,6 +23,8 @@ public class HelloController {
     private String accessKey;
     @Value("${app.secret:foobar}")
     private String secret;
+    @Value("${app.endpoint}")
+    private String endpoint;
 
     @GetMapping(value = "/hello")
     public ResponseEntity<String> sayHallo() {
@@ -38,6 +41,7 @@ public class HelloController {
                 .standard()
                 .withCredentials(new AWSStaticCredentialsProvider(credentials))
                 .withRegion(Regions.EU_CENTRAL_1)
+                .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endpoint, "eu-central-1"))
                 .build();
         String bucketName = "baeldung-bucket";
 
