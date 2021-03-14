@@ -72,6 +72,7 @@ ingress:
         - path: /
           backend:
             serviceName: "*.localstack"
+            servicePort: 4566
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
