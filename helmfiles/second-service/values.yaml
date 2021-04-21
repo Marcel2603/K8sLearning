@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: second-service
-  pullPolicy: Never
+  pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: "0.0.1"
 
@@ -81,3 +81,6 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+labels: 
+  build: '1'
