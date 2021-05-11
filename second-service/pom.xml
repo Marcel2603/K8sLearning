@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>de.herhold</groupId>
-    <artifactId>hello-service</artifactId>
+    <artifactId>second-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>hello-service</name>
     <description>Demo project for Spring Boot</description>
@@ -30,11 +30,6 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.amazonaws</groupId>
-            <artifactId>aws-java-sdk</artifactId>
-            <version>1.11.163</version>
         </dependency>
     </dependencies>
 

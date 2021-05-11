@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "localstack.fullname" . }}
+  labels:
+    {{- include "localstack.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "localstack.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "localstack.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "localstack.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: edgeport
+              containerPort: {{ .Values.service.edgePort }}
+              protocol: TCP
+            - name: esport
+              containerPort: {{ .Values.service.esPort }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: edgeport
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: edgeport
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          env:
+            - name: DEBUG
+              value: {{ ternary "1" "0" .Values.debug | quote }}
+            {{- if .Values.kinesisErrorProbability }}
+            - name: KINESIS_ERROR_PROBABILITY
+              value: {{ .Values.kinesisErrorProbability | quote }}
+            {{- end }}
+            {{- if .Values.lambdaExecutor }}
+            - name: LAMBDA_EXECUTOR
+              value: {{ .Values.lambdaExecutor | quote }}
+            {{- end }}
+            {{- if .Values.dataDir }}
+            - name: DATA_DIR
+              value: {{ .Values.dataDir | quote }}
+            {{- end }}
+            {{- if .Values.startServices }}
+            - name: SERVICES
+              value: {{ .Values.startServices | quote }}
+            {{- end }}
+            {{- if .Values.extraEnvVars }}
+            {{- include "common.tplvalues.render" (dict "value" .Values.extraEnvVars "context" $) | nindent 12 }}
+            {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

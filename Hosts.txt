@@ -1,0 +1,2 @@
+192.168.49.2 hello-service.local
+192.168.49.2 second-service.local
