@@ -7,7 +7,7 @@ s3: "http://localstack.default.svc"
 
 image:
   repository: hello-service
-  pullPolicy: Never
+  pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: "0.0.1"
 

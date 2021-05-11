@@ -24,7 +24,7 @@ public class HelloController {
     @Value("${app.secret:foobar}")
     private String secret;
     //@Value("${app.endpoint}")
-    private String endpoint = "http://localstack";
+    private String endpoint = "http://localstack.local";
 
     @GetMapping(value = "/hello")
     public ResponseEntity<String> sayHallo() {
@@ -44,15 +44,17 @@ public class HelloController {
                 .withCredentials(new AWSStaticCredentialsProvider(credentials))
                 .withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(endpoint, "eu-central-1"))
                 .build();
-        String bucketName = "baeldung-bucket";
+        String bucketName = "test";
 
         if(s3client.doesBucketExist(bucketName)) {
             System.out.println("Bucket name is not available."
                     + " Try again with a different Bucket name.");
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }  else {
+            s3client.createBucket(bucketName);
         }
 
-        s3client.createBucket(bucketName);
+        s3client.putObject(bucketName, "test.txt","testContent".getBytes());
+
 
         List<com.amazonaws.services.s3.model.Bucket> buckets = s3client.listBuckets();
         for(Bucket bucket : buckets) {
